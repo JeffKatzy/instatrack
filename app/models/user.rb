@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   attr_accessor :username, :profile_picture
 
   def self.get_users(client, current_client)
+    # this belongs in an adapter
     client.user_follows.each do |user|
       @user = User.create({"instagram_id" => user[:id]})
       @user.username = user[:username]
@@ -32,9 +33,11 @@ class User < ActiveRecord::Base
 
 
   def get_media(client) # show media based on LAST UPDATE of client
+    # this belongs in an adapter
     @current_client = Client.find_by(instagram_id: client.user.id)
     max_timestamp =  @current_client.updated_at.to_i
     last_media = client.user_recent_media(self.instagram_id, 1, {max_timestamp: max_timestamp})[0]
+    # would rewrite this if clause ot be more semantic, if media_has_location?
     if last_media && last_media[:location]
       media_id = last_media[:id]
       created_time = last_media[:created_time]

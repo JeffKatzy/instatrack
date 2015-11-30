@@ -7,10 +7,12 @@ class MapsController < ApplicationController
     # num = 120
     
     # @dots = [Map.new(latitude: 40.705333, longitude: -74.0161583)]
+    #this logic also should be in an adapter
     @client = Instagram.client(:access_token => session[:access_token])
 
     picture_size = 40
-
+    # all info about building markers should be there
+    # I should just be able to do map = Gmap.new(), map.picture
     @hash = Gmaps4rails.build_markers(valid_users) do |user, marker|
       # user.media.image_thumbnail
       marker.lat user.media.latitude
@@ -41,6 +43,7 @@ class MapsController < ApplicationController
   end 
 
   def valid_users
+    # maybe this belongs in the model?
     users.select do |user|
       user.media 
     end 
